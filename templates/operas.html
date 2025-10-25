@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Operas</h1>
+ 
+    <form class="form-control" method="post">
+        <div>
+            <label for="n1" class="form-label">N1</label>
+            <input type="text" class="form-control" id="n1" name="n1">
+        </div>
+        <div>
+            <label for="n2" class="form-label">N2</label>
+            <input type="text" class="form-control" id="n2" name="n2">
+        </div>
+ 
+        <button type="submit" class="btn btn-primary">Calcular</button>
+    </form>
+    {% if resultado is not none %}
+        <h2>El resultado es: {{ resultado }}</h2>
+    {% endif %}
+{% endblock %}
