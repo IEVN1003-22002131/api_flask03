@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Áreas</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .form-fields { margin-top: 15px; padding-left: 20px; border-left: 2px solid #eee; }
+        div { margin-bottom: 10px; }
+        label { margin-right: 10px; min-width: 150px; display: inline-block; }
+        input[type="submit"] { margin-top: 20px; padding: 10px 15px; }
+    </style>
+</head>
+<body>
+    <form method="POST" action="/figuras" novalidate>
+        <div>
+            <strong>{{ form.forma.label }}</strong><br>
+            {{ form.forma }}
+            {% for error in form.forma.errors %} 
+                <span class="error">{{ error }}</span> 
+            {% endfor %}
+        </div>
+
+        {% if figura_seleccionada == 'triangle' %}
+        <div class="form-fields">
+            <h4>Ingresa las medidas</h4>
+            <div>
+                {{ form.base.label }}
+                {{ form.base(size=10) }}
+                {% for error in form.base.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+            <div>
+                {{ form.altura.label }}
+                {{ form.altura(size=10) }}
+                {% for error in form.altura.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if figura_seleccionada == 'rectangle' %}
+        <div class="form-fields">
+            <h4>Ingresa las medidas</h4>
+            <div>
+                {{ form.largo.label }}
+                {{ form.largo(size=10) }}
+                {% for error in form.largo.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+            <div>
+                {{ form.ancho.label }}
+                {{ form.ancho(size=10) }}
+                {% for error in form.ancho.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if figura_seleccionada == 'circle' %}
+        <div class="form-fields">
+            <h4>Ingresa las medidas</h4>
+            <div>
+                {{ form.radio.label }}
+                {{ form.radio(size=10) }}
+                {% for error in form.radio.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if figura_seleccionada == 'pentagon' %}
+        <div class="form-fields">
+            <h4>Ingresa las medidas</h4>
+            <div>
+                {{ form.lado.label }}
+                {{ form.lado(size=10) }}
+                {% for error in form.lado.errors %} <span class="error">{{ error }}</span> {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div>
+            {{ form.enviar() }}
+        </div>
+    </form>
+
+    {% if area is not none %}
+        <hr>
+        <h2>Resultado</h2>
+        <p>El área del <strong>{{ nombrefig }}</strong> es: <strong>{{ "%.2f"|format(area) }}</strong></p>
+    {% endif %}
+
+</body>
+</html>

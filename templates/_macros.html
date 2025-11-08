@@ -1,0 +1,60 @@
+{% macro campo1(name,placeholder,type="text")%}
+        <div class="mb-3">
+            <label for="n1" class="form-label">N1</label>
+            <input type="text" class="form-control" id="n1" name="n1" 
+            placeholder="{{placeholder}}">
+        </div>
+{%endmacro%}
+
+{% macro campoNuevo(field) %}
+<dt>{{field.label}}</dt>
+<dd>{{ field(**kwargs)|safe }}
+        {% if field.errors %}
+        <ul class="errors">
+        {% for error in field.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}      
+        </ul>
+            {% endif %}
+        </dd>
+        {% endmacro %}
+
+
+{% macro render_field(field, class='', type=None) %}
+  <div class="form-group">
+    
+    {{ field.label(class="form-label") }}
+    
+    {% if field.type == 'RadioField' %}
+        <div class="radio-list mt-2">
+            {% for subfield in field %}
+                <label class="flex items-center gap-2 cursor-pointer">
+                    {{ subfield(class="form-radio") }}
+                    <span>{{ subfield.label.text }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    {% elif field.type == 'SelectMultipleField' %}
+        <div class="checkbox-list mt-2">
+            {% for subfield in field %}
+                <label class="flex items-center gap-2 cursor-pointer">
+                    {{ subfield(class="form-checkbox") }}
+                    <span>{{ subfield.label.text }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% if type %}
+            {{ field(class=class, type=type) }}
+        {% else %}
+            {{ field(class=class) }}
+        {% endif %}
+    {% endif %}
+
+    {% if field.errors %}
+      {% for error in field.errors %}
+        <p classclassName="error">{{ error }}</p>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endmacro %}

@@ -1,0 +1,26 @@
+{% extends "layout.html"%}
+{% block content%}
+{% import "_macros.html" as macro %}
+
+<form action="" method="post" class="form-control">
+<h1>Formulario de Alumnos</h1>
+    {{macro.campoNuevo(form.matricula)}}
+    {{macro.campoNuevo(form.nombre)}}
+    {{macro.campoNuevo(form.apellido)}}
+    {{macro.campoNuevo(form.email)}}
+ <button type="submit" class="btn btn-primary">Enviar</button>
+</form>
+
+<h2>Matricula: {{mat}}</h2>
+<h2>nombre: {{nom}}</h2>
+<h2>Apellido: {{ape}}</h2>
+<h2>Emial: {{em}}</h2>
+
+<form action="/get_cookie" method="get" class="form-control" novalidate>
+    <button type="submit" class="btn btn-secondary">Ver Cookie</button>
+</form>
+
+{% endblock %}
+
+
+

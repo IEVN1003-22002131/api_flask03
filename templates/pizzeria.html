@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    
+    {% import "_macros.html" as macros %}
+
+    <div class="max-w-7xl mx-auto">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="{{ 'flash-success' if category == 'success' else 'flash-error' }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <div class="md:col-span-2">
+                <form method="POST" action="{{ url_for('Pizza') }}" novalidate>
+                    <div class="card">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-700">Datos del Cliente</h2>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            {{ macros.render_field(form.nombre, class="form-input") }}
+                            {{ macros.render_field(form.direccion, class="form-input") }}
+                            {{ macros.render_field(form.telefono, class="form-input") }}
+                            {{ macros.render_field(form.fecha, class="form-input", type="date") }}
+                        </div>
+
+                        <hr class="my-6">
+
+                        <h3 class="text-xl font-semibold mb-4 text-gray-700">Orden</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            {{ macros.render_field(form.tamano, class="form-input") }}
+                            {{ macros.render_field(form.ingredientes, class="form-input") }}
+                            {{ macros.render_field(form.num_pizzas, class="form-input", type="number") }}
+                        </div>
+
+                        <div class="flex gap-4 mt-8">
+                            <button type="submit" name="accion" value="agregar" class="w-full bg-blue-500 text-white font-semibold py-2 px-4">
+                                Agregar Pizza
+                            </button>
+                            <button type="submit" name="accion" value="terminar" class="w-full bg-blue-500 text-white font-semibold py-2 px-4">
+                                Terminar Pedido
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <br>
+
+                <div class="card">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Detalle del Pedido Actual</h2>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b-2 border-gray-200">
+                                <th class="py-2 px-4">Tamaño</th>
+                                <th class="py-2 px-4">Ingredientes</th>
+                                <th class="py-2 px-4">Cant. Pizzas</th>
+                                <th class="py-2 px-4">SubTotal</th>
+                                <th class="py-2 px-4">Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if pizzas_pedido %}
+                                {% for pizza in pizzas_pedido %}
+                                <tr class="border-b border-gray-100">
+                                    <td class="py-3 px-4">{{ pizza.tamano }}</td>
+                                    <td class="py-3 px-4">{{ pizza.ingredientes }}</td>
+                                    <td class="py-3 px-4">{{ pizza.num_pizzas }}</td>
+                                    <td class="py-3 px-4">${{ "%.2f"|format(pizza.subtotal) }}</td>
+                                    <td class="py-3 px-4">
+                                        <form method="POST" class="m-0">
+                                            <input type="hidden" name="pizza_index" value="{{ loop.index0 }}">
+                                            <button type="submit" name="accion" value="quitar" class="btn btn-danger btn-sm">
+                                                Quitar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="py-6 px-4 text-center text-gray-500">Agrega una orden</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="md:col-span-1">
+                <div class="card">
+                    <h2 class="text-2xl font-semibold mb-6 text-gray-700">Ventas del Día</h2>
+                    
+                    {% if ventas_visibles %}
+                    
+                        <div class="space-y-4">
+                            {% if ventas_display %}
+                                {% for nombre, total in ventas_display %}
+                                <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
+                                    <span class="font-medium text-gray-800">{{ nombre }}</span>
+                                    <span class="font-bold text-lg text-green-600">${{ "%.2f"|format(total) }}</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-center text-gray-500">No hay ventas hoy.</p>
+                            {% endif %}
+                        </div>
+                        
+                        <hr class="my-6">
+
+                        <div class="flex justify-between items-center text-xl font-bold">
+                            <span>Ventas del día:</span>
+                            <span class="">${{ "%.2f"|format(total_ventas_dia) }}</span>
+                        </div>
+                    
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('Pizza') }}" class="mt-6">
+                        <input type="hidden" name="accion" value="toggle_ventas">
+                        <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4">
+                            {% if ventas_visibles %}
+                                Ocultar Ventas del Día
+                            {% else %}
+                                Mostrar Ventas del Día
+                            {% endif %}
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('Pizza') }}" class="mt-2">
+                        <input type="hidden" name="accion" value="limpiar_ventas">
+                        <button type="submit" class="w-full bg-blue-500 text-white font-semibold py-2 px-4">
+                            Reiniciar Lista de Ventas
+                        </button>
+                    </form>          
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
