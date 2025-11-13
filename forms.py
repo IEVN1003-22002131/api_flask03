@@ -17,6 +17,7 @@ class UserForm(Form):
     email=EmailField('Email', 
     [validators.Email(message= "Ingrese Correo Valido")])
 
+
 class Figuras(Form):
     forma = RadioField(
         'Seleccione una forma: ',

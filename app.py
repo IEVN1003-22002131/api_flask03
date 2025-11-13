@@ -207,6 +207,7 @@ def get_cookie():
     datos=json.loads(datos_str)
     return jsonify(datos)
 
+
 @app.route('/figuras', methods=['GET', 'POST'])
 def figuras():
     formulario = Figuras(request.form)
