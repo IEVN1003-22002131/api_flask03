@@ -1,10 +1,10 @@
 class DevelopmentConfig():
     DEBUG=True
     MYSQL_HOST='localhost'
-    MYSQL_USER='Salinas'
+    MYSQL_USER='root'
     MYSQL_PASSWORD='root'
     MYSQL_DB='api_utl'
 
-config=(
-    'development':DevelopmentConfig,
-)
+config={
+    'development': DevelopmentConfig,
+}
